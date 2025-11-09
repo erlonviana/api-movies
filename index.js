@@ -1,62 +1,60 @@
 import express from "express";
+import cors from "cors";
 const app = express();
-import mongoose from "mongoose";
-import Movie from "./models/Movies.js";
 
-//Iniciando a conexão com o banco de dados
-mongoose.connect("mongodb://127.0.0.1:27017/api-movies")
+// Dados servidos diretamente pelo código (sem MongoDB)
 
 //Configurações do express
 app.use(express.urlencoded({ extended: false}));
 app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:3000",
+}));
 
-/*app.get("/", (req,res) => {
-    const movies = [
-        {
-            title: "Superman",
-            year: "2025",
-            filmow_rating: "3.5",
-            genre: "Action"
-        },
-        {
-            title: "Pulp Fiction",
-            year: "1994",
-            filmow_rating: "4.4",
-            genre: "thriller"            
-        },
-        {
-            title: "A origem",
-            year: "2010",
-            filmow_rating: "4.4",
-            genre: "Sci-Fy"            
-        },
-        {
-            title: "Bacurau",
-            year: "2019",
-            filmow_rating: "4.3",
-            genre: "Adventure"            
-        }
-    ];
-    res.json(movies);
-});*/
+// Rota esperada pelo frontend: GET /api/filmes
+app.get("/api/filmes", (req, res) => {
+  const filmes = [
+    {
+      id: 1,
+      titulo: "Superman",
+      diretor: "Richard Donner",
+      ano: "2025",
+      genero: "Ação",
+      duracao: 143,
+    },
+    {
+      id: 2,
+      titulo: "Pulp Fiction",
+      diretor: "Quentin Tarantino",
+      ano: "1994",
+      genero: "Thriller",
+      duracao: 154,
+    },
+    {
+      id: 3,
+      titulo: "A Origem",
+      diretor: "Christopher Nolan",
+      ano: "2010",
+      genero: "Sci-Fi",
+      duracao: 148,
+    },
+    {
+      id: 4,
+      titulo: "Bacurau",
+      diretor: "Kleber Mendonça Filho",
+      ano: "2019",
+      genero: "Aventura",
+      duracao: 131,
+    },
+  ];
+  res.json(filmes);
+});
 
-//Rodando API na porta 4000
-const port = 4000;
+// Rodando API na porta 3001 para alinhar com o frontend
+const port = 3001;
 app.listen(port, (error) => {
     if(error){
         console.log(error)
     }
     console.log(`API rodando em http://localhost:${port}`);
 })
-
-//Criando o retorno da API
-app.get("/", async (req, res) => {
-    try{
-        const movies = await Movie.find();
-        res.status(200).json({movies: movies});
-    }catch (error) {
-        console.log(error);
-        res.status(500).json({error: "Erro interno do servidor"})
-        }
-    }
-)
